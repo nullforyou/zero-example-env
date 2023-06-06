@@ -1,0 +1,52 @@
+global:
+  scrape_interval:
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+  - job_name: 'order-api'
+    static_configs:
+      - targets: [ 'host.docker.internal:4011' ]
+        labels:
+          job: order-api
+          app: order-api
+          env: dev
+  - job_name: 'order-rpc'
+    static_configs:
+      - targets: [ 'host.docker.internal:4012' ]
+        labels:
+          job: order-rpc
+          app: order-rpc
+          env: dev
+  - job_name: 'order-job'
+    static_configs:
+      - targets: [ 'host.docker.internal:4013' ]
+        labels:
+          job: order-job
+          app: order-job
+          env: dev
+  - job_name: 'user-api'
+    static_configs:
+      - targets: [ 'host.docker.internal:4021' ]
+        labels:
+          job: user-api
+          app: user-api
+          env: dev
+  - job_name: 'user-rpc'
+    static_configs:
+      - targets: [ 'host.docker.internal:4022' ]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+  - job_name: 'mqueue-scheduler'
+    static_configs:
+      - targets: [ 'host.docker.internal:8001' ]
+        labels:
+          job: mqueue-scheduler
+          app: mqueue-scheduler
+          env: dev
