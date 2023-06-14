@@ -15,6 +15,25 @@ services:
     networks:
       - zero_example_net
     restart: always
+
+  # dtm
+  dtm:
+    image: yedf/dtm
+    environment:
+      STORE_DRIVER: ${DTM_STORE_DRIVER}
+      STORE_HOST: ${DTM_STORE_HOST}
+      STORE_USER: ${DTM_STORE_USER}
+      STORE_PASSWORD: '${DTM_STORE_PASSWORD}'
+      STORE_PORT: 3306
+      MICRO_SERVICE_DRIVER: '${DTM_MICRO_SERVICE_DRIVER}'
+      MICRO_SERVICE_TARGET: '${DTM_MICRO_SERVICE_TARGET}'
+      MICRO_SERVICE_END_POINT: '${DTM_MICRO_SERVICE_END_POINT}'
+    ports:
+      - '36789:36789'
+      - '36790:36790'
+    networks:
+      - zero_example_net
+
   #jaeger链路追踪
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -30,7 +49,7 @@ services:
       - "9411:9411"
     environment:
       - SPAN_STORAGE_TYPE=elasticsearch
-      - ES_SERVER_URLS=http://elasticsearch:9200
+      - ES_SERVER_URLS=http://${ES_SERVER_URLS}:${ES_PORT}
       - LOG_LEVEL=debug
     networks:
       - zero_example_net
@@ -85,7 +104,7 @@ services:
       - ./data/elasticsearch/data:/usr/share/elasticsearch/data
     restart: always
     ports:
-      - 9200:9200
+      - ${ES_PORT}:9200
       - 9300:9300
     networks:
       - zero_example_net
@@ -95,7 +114,7 @@ services:
 #    image: docker.elastic.co/kibana/kibana:7.13.4
 #    container_name: kibana
 #    environment:
-#      - elasticsearch.hosts=http://elasticsearch:9200
+#      - elasticsearch.hosts=http://${ES_SERVER_URLS}:${ES_PORT}
 #      - TZ=${TZ}
 #    restart: always
 #    networks:
@@ -184,8 +203,8 @@ services:
     ports:
       - 8980:8080
     command:
-      - '--redis-addr=redis:6379'
-      - '--redis-password=G62m50oigInC30sf'
+      - '--redis-addr=${REDIS_ACCESS_ADDR}'
+      - '--redis-password=${REDIS_PASSWORD}'
     restart: always
     networks:
       - zero_example_net
@@ -199,7 +218,7 @@ services:
 #      # 时区上海 - Time zone Shanghai (Change if needed)
 #      TZ: ${TZ}
 #      # root 密码 - root password
-#      MYSQL_ROOT_PASSWORD: jiangx
+#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 #    ports:
 #      - 33069:3306
 #    volumes:
@@ -231,7 +250,7 @@ services:
     volumes:
       # 数据文件 - data files
       - ./data/redis/data:/data:rw
-    command: "redis-server --requirepass jiangx  --appendonly yes"
+    command: "redis-server --requirepass ${REDIS_PASSWORD}  --appendonly yes"
     privileged: true
     restart: always
     networks:

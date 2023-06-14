@@ -45,7 +45,7 @@ scrape_configs:
           env: dev
   - job_name: 'mqueue-scheduler'
     static_configs:
-      - targets: [ 'host.docker.internal:8001' ]
+      - targets: [ 'host.docker.internal:4001' ]
         labels:
           job: mqueue-scheduler
           app: mqueue-scheduler
