@@ -16,24 +16,6 @@ services:
       - zero_example_net
     restart: always
 
-  # dtm
-  dtm:
-    image: yedf/dtm
-    environment:
-      STORE_DRIVER: ${DTM_STORE_DRIVER}
-      STORE_HOST: ${DTM_STORE_HOST}
-      STORE_USER: ${DTM_STORE_USER}
-      STORE_PASSWORD: '${DTM_STORE_PASSWORD}'
-      STORE_PORT: 3306
-      MICRO_SERVICE_DRIVER: '${DTM_MICRO_SERVICE_DRIVER}'
-      MICRO_SERVICE_TARGET: '${DTM_MICRO_SERVICE_TARGET}'
-      MICRO_SERVICE_END_POINT: '${DTM_MICRO_SERVICE_END_POINT}'
-    ports:
-      - '36789:36789'
-      - '36790:36790'
-    networks:
-      - zero_example_net
-
   #jaeger链路追踪
   jaeger:
     image: jaegertracing/all-in-one:latest
