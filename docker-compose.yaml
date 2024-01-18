@@ -13,7 +13,7 @@ services:
     volumes:
       - /deploy/etcd/conf.yml:/opt/bitnami/etcd/conf/etcd.yaml
     networks:
-      - zero_example_net
+      - app-network
     restart: always
 
   #jaeger链路追踪
@@ -34,7 +34,7 @@ services:
       - ES_SERVER_URLS=http://${ES_SERVER_URLS}:${ES_PORT}
       - LOG_LEVEL=debug
     networks:
-      - zero_example_net
+      - app-network
 
   #prometheus监控
   prometheus:
@@ -54,7 +54,7 @@ services:
     ports:
       - 9090:9090
     networks:
-      - zero_example_net
+      - app-network
 
   #查看prometheus监控数据 - Grafana to view Prometheus monitoring data
   grafana:
@@ -71,7 +71,7 @@ services:
     ports:
       - "3001:3000"
     networks:
-      - zero_example_net
+      - app-network
 
   #  #搜集kafka业务日志、存储prometheus监控数据
   elasticsearch:
@@ -89,7 +89,7 @@ services:
       - ${ES_PORT}:9200
       - 9300:9300
     networks:
-      - zero_example_net
+      - app-network
 
   #查看elasticsearch数据 - Kibana to view Elasticsearch data
 #  kibana:
@@ -100,7 +100,7 @@ services:
 #      - TZ=${TZ}
 #    restart: always
 #    networks:
-#      - zero_example_net
+#      - app-network
 #    ports:
 #      - "5601:5601"
 #    depends_on:
@@ -119,7 +119,7 @@ services:
 #    volumes:
 #      - ./deploy/go-stash/etc:/app/etc
 #    networks:
-#      - zero_example_net
+#      - app-network
 #    depends_on:
 #      - elasticsearch
 #      - kafka
@@ -141,7 +141,7 @@ services:
 #      # - /var/snap/docker/common/var-lib-docker/containers:/var/lib/docker/containers
 #      - /var/lib/docker/containers:/var/lib/docker/containers
 #    networks:
-#      - zero_example_net
+#      - app-network
 #    depends_on:
 #      - kafka
 
@@ -157,7 +157,7 @@ services:
     ports:
       - 2181:2181
     networks:
-      - zero_example_net
+      - app-network
 
   #消息队列 - Message queue
   kafka:
@@ -174,7 +174,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - zero_example_net
+      - app-network
     depends_on:
       - zookeeper
 
@@ -189,7 +189,7 @@ services:
       - '--redis-password=${REDIS_PASSWORD}'
     restart: always
     networks:
-      - zero_example_net
+      - app-network
     depends_on:
       - redis
 
@@ -218,7 +218,7 @@ services:
 #    privileged: true
 #    restart: always
 #    networks:
-#      - zero_example_net
+#      - app-network
 
   #redis容器 - Redis container
   redis:
@@ -236,13 +236,15 @@ services:
     privileged: true
     restart: always
     networks:
-      - zero_example_net
+      app-network:
+        ipv4_address: 172.21.0.100
 
 
 networks:
-  zero_example_net:
+  app-network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
 
